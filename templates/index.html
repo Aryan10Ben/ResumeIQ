@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResumeIQ - Intelligent Resume Screener & Ranking System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="background-glows">
+        <div class="glow-1"></div>
+        <div class="glow-2"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i class="fa-solid fa-wand-magic-sparkles logo-icon"></i>
+                <h1>Resume<span class="accent-text">IQ</span></h1>
+            </div>
+            <p class="tagline">Evaluate, compare, and rank resumes for best fit.</p>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            <i class="fa-solid {% if category == 'error' %}fa-circle-exclamation{% else %}fa-circle-check{% endif %} message-icon"></i>
+                            <span class="message-text">{{ message }}</span>
+                            <button class="close-flash" onclick="this.parentElement.remove()">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Interactive Form Panel -->
+        <main class="main-content">
+            <form action="{{ url_for('match') }}" method="POST" enctype="multipart/form-data" id="screenerForm">
+                <div class="workspace-grid">
+                    
+                    <!-- Left: Upload Section -->
+                    <div class="card glass-card upload-section">
+                        <div class="card-header">
+                            <span class="step-num">1</span>
+                            <h2>Upload Resumes</h2>
+                        </div>
+                        <p class="card-description">Upload one or multiple resumes to extract skills and compute matching scores.</p>
+                        
+                        <div class="drop-zone" id="dropZone">
+                            <input type="file" name="resumes" id="resumeInput" multiple accept=".pdf,.txt" class="file-input-hidden" required>
+                            <div class="drop-zone-content">
+                                <div class="drop-icon-wrapper">
+                                    <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
+                                </div>
+                                <h3>Drag & drop resumes here</h3>
+                                <p>Supports <strong>PDF</strong> and <strong>TXT</strong> files</p>
+                                <span class="btn-browse">Browse Files</span>
+                            </div>
+                        </div>
+
+                        <!-- Uploaded Files Preview List -->
+                        <div class="file-list-wrapper" id="fileListWrapper" style="display: none;">
+                            <div class="file-list-header">
+                                <span>Selected Files (<span id="fileCount">0</span>)</span>
+                                <button type="button" class="btn-clear-files" id="btnClearFiles">Clear All</button>
+                            </div>
+                            <ul class="file-list" id="fileList">
+                                <!-- Dynamically populated by JS -->
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Right: Job Description Section -->
+                    <div class="card glass-card jd-section">
+                        <div class="card-header">
+                            <span class="step-num">2</span>
+                            <h2>Job Description</h2>
+                        </div>
+                        <p class="card-description">Paste the target job description to match skills.</p>
+                        
+                        <div class="textarea-wrapper">
+                            <textarea 
+                                name="job_description" 
+                                id="jdTextarea" 
+                                placeholder="Paste the job requirements, responsibilities, and expected technical skills here..." 
+                                maxlength="5000"
+                                required
+                            ></textarea>
+                            <div class="textarea-counter">
+                                0 / 5000
+                            </div>
+                        </div>
+                        
+                        <div class="quick-templates">
+                            <label for="jdSelect" class="template-label">Sample Job Description:</label>
+                            <div class="select-wrapper">
+                                <select id="jdSelect" class="jd-select-dropdown" onchange="loadMockJD(this.value)">
+                                    <option value="" disabled selected>Select Job Role</option>
+                                    <option value="ds">Data Scientist</option>
+                                    <option value="fs">Full-Stack Engineer</option>
+                                    <option value="frontend">Frontend Developer</option>
+                                    <option value="backend">Backend Engineer</option>
+                                    <option value="devops">DevOps Engineer</option>
+                                    <option value="mobile">Mobile App Developer</option>
+                                    <option value="pm">Product Manager</option>
+                                    <option value="uiux">UI/UX Designer</option>
+                                    <option value="qa">QA Automation Engineer</option>
+                                    <option value="security">Cybersecurity Analyst</option>
+                                    <option value="data_eng">Data Engineer</option>
+                                    <option value="ml_eng">Machine Learning Engineer</option>
+                                    <option value="cloud_arch">Cloud Solutions Architect</option>
+                                    <option value="dba">Database Administrator (DBA)</option>
+                                    <option value="sys_admin">Systems Administrator</option>
+                                    <option value="scrum">Scrum Master</option>
+                                    <option value="embedded">Embedded Systems Engineer</option>
+                                    <option value="blockchain">Blockchain Developer</option>
+                                    <option value="tech_writer">Technical Writer</option>
+                                    <option value="sre">Site Reliability Engineer (SRE)</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down select-arrow"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Button -->
+                <div class="submit-action-wrapper">
+                    <button type="submit" class="btn-submit" id="btnSubmit">
+                        <span class="btn-text">Screen & Rank Resumes</span>
+                        <i class="fa-solid fa-arrow-right arrow-icon"></i>
+                    </button>
+                </div>
+            </form>
+        </main>
+        
+        <!-- Loading Overlay -->
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner-container">
+                <div class="sparkle-spinner"></div>
+                <h3 class="loading-title">Analyzing Talent Profiles...</h3>
+                <p class="loading-desc">Parsing documents, extracting core skills, and running cosine similarity matrices.</p>
+            </div>
+        </div>
+
+        <footer class="app-footer">
+            <p>ResumeIQ &copy; 2026. Made with Python, NLP, and Scikit-learn.</p>
+        </footer>
+    </div>
+
+    <!-- Frontend Interactive Javascript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('resumeInput');
+            const fileList = document.getElementById('fileList');
+            const fileListWrapper = document.getElementById('fileListWrapper');
+            const fileCountSpan = document.getElementById('fileCount');
+            const btnClearFiles = document.getElementById('btnClearFiles');
+            const jdTextarea = document.getElementById('jdTextarea');
+            const charCountSpan = document.getElementById('charCount');
+            const screenerForm = document.getElementById('screenerForm');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Drag and drop event listeners
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('dragover');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('dragover');
+                }, false);
+            });
+
+            // Trigger file click when clicking browse button or drop zone
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // File selection change
+            fileInput.addEventListener('change', handleFileSelection);
+
+            // Handle drop event
+            dropZone.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    handleFileSelection();
+                }
+            });
+
+            // Populate selected files preview
+            function handleFileSelection() {
+                const files = fileInput.files;
+                fileList.innerHTML = '';
+                
+                if (files.length > 0) {
+                    fileListWrapper.style.display = 'block';
+                    fileCountSpan.textContent = files.length;
+                    
+                    Array.from(files).forEach((file, index) => {
+                        const li = document.createElement('li');
+                        const isPDF = file.name.toLowerCase().endsWith('.pdf');
+                        const fileIcon = isPDF ? 'fa-file-pdf pdf-color' : 'fa-file-lines txt-color';
+                        
+                        li.innerHTML = `
+                            <div class="file-item-left">
+                                <i class="fa-solid ${fileIcon} file-item-icon"></i>
+                                <div class="file-item-info">
+                                    <span class="file-item-name" title="${file.name}">${file.name}</span>
+                                    <span class="file-item-size">${formatBytes(file.size)}</span>
+                                </div>
+                            </div>
+                            <span class="file-item-status"><i class="fa-solid fa-circle-check"></i> Ready</span>
+                        `;
+                        fileList.appendChild(li);
+                    });
+                } else {
+                    fileListWrapper.style.display = 'none';
+                }
+            }
+
+            // Clear all files
+            btnClearFiles.addEventListener('click', (e) => {
+                e.stopPropagation();
+                fileInput.value = '';
+                handleFileSelection();
+            });
+
+            // Character counter for Job Description
+            const MAX_LENGTH = 5000;
+            const counterText = document.querySelector('.textarea-counter');
+            
+            jdTextarea.addEventListener('input', updateCharCounter);
+            
+            function updateCharCounter() {
+                const len = jdTextarea.value.length;
+                
+                // Reset classes
+                counterText.className = 'textarea-counter';
+                
+                if (len >= MAX_LENGTH) {
+                    counterText.classList.add('limit-reached');
+                } else if (len >= MAX_LENGTH * 0.9) {
+                    counterText.classList.add('limit-warning');
+                }
+                
+                counterText.textContent = `${len} / ${MAX_LENGTH}`;
+            }
+
+            // Show loading animation on submit
+            screenerForm.addEventListener('submit', (e) => {
+                if (fileInput.files.length === 0) {
+                    alert("Please upload at least one resume.");
+                    e.preventDefault();
+                    return;
+                }
+                if (jdTextarea.value.trim() === '') {
+                    alert("Please provide a job description.");
+                    e.preventDefault();
+                    return;
+                }
+                loadingOverlay.classList.add('active');
+            });
+
+            // Format size string
+            function formatBytes(bytes, decimals = 1) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const dm = decimals < 0 ? 0 : decimals;
+                const sizes = ['Bytes', 'KB', 'MB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+            }
+        });
+
+        // Mock job description pre-loads for convenience
+        function loadMockJD(type) {
+            const jds = {
+                ds: `Data Scientist Responsibilities:
+- Design, train, and deploy Machine Learning models (supervised/unsupervised) to solve complex predictive problems.
+- Extract, clean, and process large datasets using Python, Pandas, and NumPy.
+- Build natural language processing (NLP) pipelines for classification and text sentiment.
+- Work closely with cloud infrastructure on AWS (S3, SageMaker) to run model pipelines at scale.
+- Present findings using data visualization tools like Matplotlib, Seaborn, or Tableau.
+- Work within an Agile Scrum team environment.
+
+Required Skills: Python, Machine Learning, NLP, Pandas, NumPy, Scikit-learn, AWS, SQL, Docker, Tableau.`,
+                fs: `Full-Stack Web Developer Requirements:
+- Build responsive and interactive user interfaces using React, HTML5, CSS3, and JavaScript/TypeScript.
+- Design, build, and maintain RESTful API backends using Python and Flask.
+- Integrate relational and non-relational database services such as PostgreSQL and MongoDB.
+- Build secure, scalable applications utilizing Git version control, Docker containers, and CI/CD pipelines.
+- Practice agile methodology (Scrum, Jira) to deliver clean, documented, and fully tested code.
+- Knowledge of system design, Microservices, and cloud services (AWS or GCP).
+
+Required Skills: Python, Flask, React, JavaScript, SQL, PostgreSQL, MongoDB, Git, Docker, Rest API.`,
+                frontend: `Frontend Web Developer Responsibilities:
+- Design and build responsive, highly interactive user interfaces using React, JavaScript, HTML5, and CSS3.
+- Optimize client-side application performance and state management using Redux or TypeScript.
+- Collaborate with UI/UX designers to translate Figma design mockups into pixel-perfect code.
+- Write unit tests using Jest or Cypress and integrate with Git repositories.
+
+Required Skills: React, JavaScript, TypeScript, HTML, CSS, Figma, Jest, Git, Redux.`,
+                backend: `Backend Engineer Requirements:
+- Build and maintain scalable, robust RESTful APIs using Python, Flask, Django, or Node.js.
+- Design relational and non-relational database models with PostgreSQL, MySQL, and MongoDB.
+- Implement security protocols, user authentication (OAuth, JWT), and secure API gateways.
+- Collaborate with frontend engineers to integrate web applications and client services.
+
+Required Skills: Python, Flask, Django, SQL, PostgreSQL, MongoDB, REST API, Node.js, Git, JWT.`,
+                devops: `DevOps Engineer Requirements:
+- Build, monitor, and automate deployment pipelines using CI/CD (Jenkins, GitHub Actions).
+- Manage containerized systems and microservices using Docker and Kubernetes.
+- Provision cloud infrastructure on AWS or GCP using Infrastructure as Code (Terraform).
+- Write automation scripts using Bash, Python, or PowerShell in a Linux environment.
+
+Required Skills: Docker, Kubernetes, AWS, GCP, Terraform, Git, Jenkins, Linux, Bash, CI/CD.`,
+                mobile: `Mobile App Developer Responsibilities:
+- Develop native mobile applications for iOS (Swift) and Android (Kotlin) or cross-platform applications using Flutter.
+- Integrate mobile apps with RESTful backend APIs and cloud services.
+- Optimize mobile performance, layout responsiveness, and offline database synchronization.
+- Build, test, and release app builds to Apple App Store and Google Play Store.
+
+Required Skills: Swift, Kotlin, Flutter, React Native, REST API, Git, Mobile, UI/UX.`,
+                pm: `Product Manager Responsibilities:
+- Define product vision, create product roadmap, and align engineering/design teams.
+- Lead Agile Scrum teams, manage product backlog, and write user stories in Jira.
+- Conduct user research, user surveys, and data analytics to optimize user journeys.
+- Communicate product requirements and KPIs clearly to cross-functional stakeholders.
+
+Required Skills: Project Management, Agile, Scrum, Jira, Communication, Leadership, Analytical Skills.`,
+                uiux: `UI/UX & Product Designer Requirements:
+- Create wireframes, user flows, and interactive high-fidelity prototypes in Figma or Sketch.
+- Conduct usability testing, user research interviews, and user journey mapping.
+- Establish and scale cohesive design systems and collaborate closely with frontend developers.
+- Focus on typography, layout hierarchy, visual design, and user-centered solutions.
+
+Required Skills: Figma, Sketch, Photoshop, Illustrator, UI/UX, Wireframing, Prototyping, User Research.`,
+                qa: `QA Automation Engineer Requirements:
+- Develop and execute automated test scripts for APIs and web frontends using Python, PyTest, or Selenium.
+- Identify, document, and track software bugs and regressions in Jira.
+- Integrate automated testing into CI/CD pipelines to ensure continuous delivery quality.
+- Write detailed test cases, test plans, and collaborate with developers on code quality.
+
+Required Skills: QA, Testing, PyTest, Selenium, Cypress, Python, Git, Jira, CI/CD.`,
+                security: `Cybersecurity Analyst Responsibilities:
+- Monitor network traffic, analyze security logs, and respond to potential security threats.
+- Perform vulnerability assessments, penetration testing, and risk audits.
+- Implement security firewalls, access controls (IAM), cryptography, and compliance benchmarks.
+- Provide incident response guides and security training for engineering departments.
+
+Required Skills: Cybersecurity, Cryptography, Linux, AWS, Network Security, Firewalls, Penetration Testing.`,
+                data_eng: `Data Engineer Requirements:
+- Build and optimize scalable ETL/ELT pipelines using Apache Airflow and Apache Spark.
+- Design database warehouses and schemas using Snowflake, BigQuery, and SQL Server.
+- Process big data streams using Apache Kafka and manage storage structures in Hadoop HDFS.
+- Ensure data quality, logging, and metadata alignment across data repositories.
+
+Required Skills: SQL, Python, Airflow, Spark, Kafka, Snowflake, BigQuery, Hadoop, Data Science.`,
+                ml_eng: `Machine Learning Engineer Responsibilities:
+- Build, train, optimize, and deploy Machine Learning and Deep Learning models (TensorFlow, PyTorch).
+- Process unstructured data structures for Natural Language Processing (NLP) or Computer Vision models.
+- Deploy models at scale as APIs using Flask, FastAPI, Docker, and AWS SageMaker.
+- Build monitoring pipelines to track model drift, accuracy, and system latency.
+
+Required Skills: Machine Learning, Deep Learning, Python, PyTorch, TensorFlow, Scikit-learn, NLP, Docker, AWS.`,
+                cloud_arch: `Cloud Solutions Architect Requirements:
+- Design high-availability, fault-tolerant, and cost-effective cloud architectures on AWS, GCP, or Azure.
+- Configure cloud networks, VPCs, subnets, load balancing, and IAM configurations.
+- Help transition legacy systems to modern Microservices and serverless infrastructure.
+- Partner with DevOps engineers to configure auto-scaling group structures and logging.
+
+Required Skills: AWS, GCP, Azure, Cloud Computing, Kubernetes, Terraform, System Design, Microservices.`,
+                dba: `Database Administrator Responsibilities:
+- Manage, monitor, configure, and tune database servers (PostgreSQL, MySQL, SQL Server, Oracle).
+- Implement database high-availability structures, replicas, clustering, and backup recovery.
+- Optimize database index systems and review slow queries to reduce database server latency.
+- Ensure database security, user permission structures, and data encryption compliance.
+
+Required Skills: SQL, PostgreSQL, MySQL, NoSQL, Oracle, Cassandra, SQLite, Linux, Backup.`,
+                sys_admin: `Systems Administrator Responsibilities:
+- Manage local and cloud servers running Linux (Ubuntu, CentOS) and Windows Server.
+- Write automation scripts using Bash, PowerShell, or Python to manage backups and updates.
+- Install, configure, and maintain network protocols, firewalls, and DNS systems.
+- Monitor system hardware, CPU logs, disk storage, and manage user access policies.
+
+Required Skills: Linux, Bash, PowerShell, Network Security, Firewalls, DNS, SSH, Active Directory.`,
+                scrum: `Scrum Master / Agile Coach Responsibilities:
+- Facilitate daily stand-ups, sprint planning, sprint retrospectives, and sprint backlog grooming.
+- Support the Product Owner with product backlog management and scope validation.
+- Identify and remove development blockers, shields, and organizational dependencies.
+- Guide cross-functional teams toward agile maturity, self-organization, and high performance.
+
+Required Skills: Scrum, Agile, Jira, Confluence, Project Management, Communication, Leadership.`,
+                embedded: `Embedded Systems Engineer Requirements:
+- Design and write firmware and drivers for microcontrollers using C and C++ programming.
+- Interface with hardware peripherals and sensors using communication protocols (SPI, I2C, UART).
+- Work with Real-Time Operating Systems (RTOS) and debug code using oscilloscopes and logic analyzers.
+- Optimize firmware memory, power consumption, and hardware execution cycles.
+
+Required Skills: C++, C, Linux, Git, Microcontrollers, RTOS, Hardware, Embedded.`,
+                blockchain: `Blockchain Developer Responsibilities:
+- Design and implement decentralized applications (DApps) and smart contracts in Solidity or Rust.
+- Build Web3 integrations and connect frontends with blockchain networks (Ethereum, Solana).
+- Write test scripts for smart contracts and audit them for security vulnerabilities.
+- Configure decentralized file storage networks (IPFS) and crypto payment channels.
+
+Required Skills: Blockchain, Solidity, Rust, Cryptography, Web3, Git, Ethereum, Smart Contracts.`,
+                tech_writer: `Technical Writer Responsibilities:
+- Write and maintain clear developer documentation, API guides, user manuals, and tutorials.
+- Review codebase code styles and write inline docstrings and Markdown reference templates.
+- Partner with product managers and engineers to document system features and product release notes.
+- Organize documentation portals and manage formatting, markup structures, and searchability.
+
+Required Skills: Technical Writing, Markdown, Git, Communication, Word, Google Docs, HTML.`,
+                sre: `Site Reliability Engineer Requirements:
+- Optimize system availability, scalability, and performance of cloud applications.
+- Design and measure Service Level Indicators (SLIs) and Service Level Objectives (SLOs).
+- Implement telemetry, logging, monitoring systems (Prometheus, Grafana, ELK Stack).
+- Build automated scripting to manage system failovers and lead incident post-mortem reviews.
+
+Required Skills: DevOps, SRE, Prometheus, Grafana, Linux, Kubernetes, AWS, Bash, Python, Docker.`
+            };
+            
+            if (jds[type]) {
+                const textarea = document.getElementById('jdTextarea');
+                textarea.value = jds[type];
+                // Trigger input event to update char counter
+                const event = new Event('input', { bubbles: true });
+                textarea.dispatchEvent(event);
+            }
+        }
+    </script>
+</body>
+</html>

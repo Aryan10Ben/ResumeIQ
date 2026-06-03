@@ -1,0 +1,27 @@
+Carol Smith
+UI/UX & Product Designer
+Email: carol.smith@email.com | Portfolio: carolsmith.design
+
+SUMMARY
+Creative UI/UX Designer with 4 years of experience crafting user-centered digital interfaces. Expert in prototyping high-fidelity web and mobile layouts, conducting user research, and creating design systems in Figma.
+
+TECHNICAL SKILLS
+- Design Tools: Figma, Sketch, Adobe XD, Photoshop, Illustrator
+- Design Methods: User Research, Wireframing, Prototyping, Usability Testing, Info Architecture
+- UI Development: HTML, CSS (basic exposure)
+- Soft Skills: Collaboration, Communication, Creative Problem Solving, Teamwork
+
+EXPERIENCE
+Product Designer | Pixels & Co. (2023 - Present)
+- Designed wireframes, user flows, and interactive high-fidelity prototypes in Figma for SaaS web apps.
+- Conducted user testing and usability research with 30+ participants, identifying key UX bottlenecks.
+- Established and maintained a unified design system, improving designer-developer handoff speed by 40%.
+- Collaborated closely with front-end engineers to ensure design implementation fidelity.
+
+Visual Designer | Creative Studio (2022 - 2023)
+- Created graphics, branding assets, and marketing layouts using Photoshop and Illustrator.
+- Designed landing page interfaces and custom illustrations.
+
+EDUCATION
+B.F.A. in Graphic Design | Design Institute (2018 - 2022)
+- Focus on Human-Computer Interaction

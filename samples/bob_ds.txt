@@ -1,0 +1,29 @@
+Bob Miller
+Data Scientist & Machine Learning Engineer
+Email: bob.miller@email.com | Phone: (555) 045-6789 | LinkedIn: linkedin.com/in/bobmiller
+
+SUMMARY
+Data Scientist with 4 years of professional experience leveraging mathematical modeling, statistical analysis, and Machine Learning to extract business-critical insights. Specialized in building natural language processing (NLP) pipelines and deploying models into cloud infrastructure on AWS.
+
+TECHNICAL SKILLS
+- Programming: Python, R, SQL, Bash
+- ML/AI: Machine Learning, Deep Learning, Natural Language Processing (NLP), Computer Vision
+- Libraries: Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, Matplotlib, Seaborn
+- Cloud & Infrastructure: AWS (S3, EC2, SageMaker), Docker, Git
+- Methodologies: Agile, Scrum, Project Management
+
+EXPERIENCE
+Senior Data Analyst & ML Engineer | DataOptics (2024 - Present)
+- Developed and deployed predictive Machine Learning models (random forests, gradient boosting) to optimize customer churn prediction, improving retention by 15%.
+- Built end-to-end NLP pipelines using Python, Scikit-learn, and TensorFlow to classify user reviews.
+- Configured data storage and model pipelines on AWS using S3 and SageMaker.
+- Worked in an Agile environment collaborating with product managers using Jira.
+
+Data Analyst | Analytics Lab (2022 - 2024)
+- Processed, cleaned, and summarized structured/unstructured datasets using Python, Pandas, and NumPy.
+- Created data visualizations and reports using Seaborn, Matplotlib, and Tableau for executive reviews.
+- Designed and optimized SQL queries to query database warehouses, reducing load times.
+
+EDUCATION
+M.S. in Data Science | State University (2020 - 2022)
+B.S. in Statistics | State University (2016 - 2020)

@@ -1,0 +1,29 @@
+Alice Vance
+Full-Stack Software Engineer
+Email: alice.vance@email.com | Phone: (555) 019-2834 | GitHub: github.com/alicev
+
+SUMMARY
+Highly motivated Full-Stack Software Engineer with 3+ years of experience designing, building, and maintaining scalable web applications. Proven track record of developing robust REST API backends using Python and Flask, and creating interactive user interfaces with React and modern CSS/HTML.
+
+TECHNICAL SKILLS
+- Languages: Python, JavaScript, HTML5, CSS3, SQL
+- Frameworks & Libraries: Flask, React, Node.js, Express, Bootstrap
+- Databases: PostgreSQL, MongoDB, MySQL
+- Tools & DevOps: Git, GitHub, Docker, CI/CD, Postman
+- Concepts: REST APIs, System Design, Microservices, Agile Scrum
+
+EXPERIENCE
+Full-Stack Developer | DevCorp Inc. (2024 - Present)
+- Architected and implemented RESTful APIs using Python, Flask, and PostgreSQL, increasing API response times by 30%.
+- Developed a dynamic dashboard using React, leading to a 25% increase in user engagement.
+- Containerized development and staging environments using Docker, streamlining onboarding.
+- Maintained source code integrity and coordinated features using Git and GitHub in a 5-member Agile Scrum team.
+
+Junior Web Developer | WebCraft Solutions (2023 - 2024)
+- Developed front-end components using JavaScript, HTML, and CSS.
+- Designed and optimized SQL queries for a MySQL database, reducing data retrieve latency.
+- Participated in weekly Scrum meetings and code reviews to maintain code quality.
+
+EDUCATION
+B.S. in Computer Science | Tech University (2019 - 2023)
+- Graduated with Honors
