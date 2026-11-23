@@ -1,0 +1,229 @@
+{
+  "Programming languages": {
+    "Python": [
+      "python3"
+    ],
+    "Java": [],
+    "JavaScript": [
+      "javascript",
+      "js"
+    ],
+    "TypeScript": [
+      "typescript"
+    ],
+    "C++": [
+      "cpp"
+    ],
+    "C#": [
+      "c sharp"
+    ],
+    "Rust": [],
+    "Ruby": [],
+    "PHP": [],
+    "Kotlin": [],
+    "Swift": [],
+    "Scala": [],
+    "Bash": [
+      "shell scripting"
+    ],
+    "PowerShell": [],
+    "SQL": [
+      "structured query language"
+    ],
+    "HTML": [
+      "html5"
+    ],
+    "CSS": [
+      "css3"
+    ]
+  },
+  "Frameworks and APIs": {
+    "Flask": [],
+    "FastAPI": [],
+    "Django": [],
+    "React": [
+      "react.js",
+      "reactjs"
+    ],
+    "Next.js": [
+      "nextjs",
+      "next js"
+    ],
+    "Vue": [
+      "vue.js",
+      "vuejs"
+    ],
+    "Angular": [],
+    "Svelte": [],
+    "Node.js": [
+      "nodejs",
+      "node js"
+    ],
+    "Express": [
+      "express.js",
+      "expressjs"
+    ],
+    "Spring Boot": [],
+    "ASP.NET": [
+      "asp.net core"
+    ],
+    "REST API": [
+      "rest api",
+      "restful api",
+      "restful apis",
+      "rest apis"
+    ],
+    "GraphQL": [],
+    "Bootstrap": [],
+    "Tailwind CSS": [
+      "tailwind"
+    ],
+    "Redux": [],
+    "Jest": [],
+    "Pytest": [
+      "pytest"
+    ],
+    "Selenium": [],
+    "Postman": []
+  },
+  "Databases and data engineering": {
+    "PostgreSQL": [
+      "postgres"
+    ],
+    "MySQL": [],
+    "MongoDB": [],
+    "SQLite": [],
+    "Redis": [],
+    "Oracle Database": [
+      "oracle db"
+    ],
+    "SQL Server": [
+      "microsoft sql server",
+      "ms sql"
+    ],
+    "Elasticsearch": [
+      "elastic search"
+    ],
+    "BigQuery": [],
+    "Snowflake": [],
+    "Apache Spark": [
+      "spark",
+      "pyspark"
+    ],
+    "Apache Kafka": [
+      "kafka"
+    ],
+    "Apache Airflow": [
+      "airflow"
+    ],
+    "ETL": [
+      "extract transform load"
+    ],
+    "Data Warehousing": [
+      "data warehouse"
+    ],
+    "Pandas": [],
+    "NumPy": [
+      "numpy"
+    ],
+    "Matplotlib": [],
+    "Seaborn": [],
+    "Tableau": [],
+    "Power BI": [
+      "powerbi"
+    ],
+    "Excel": [
+      "microsoft excel"
+    ]
+  },
+  "Machine learning and AI": {
+    "Machine Learning": [
+      "ml engineer",
+      "machine-learning"
+    ],
+    "Deep Learning": [],
+    "NLP": [
+      "natural language processing"
+    ],
+    "Computer Vision": [],
+    "Scikit-learn": [
+      "sklearn",
+      "scikit learn"
+    ],
+    "TensorFlow": [],
+    "PyTorch": [
+      "pytorch"
+    ],
+    "Keras": [],
+    "Transformers": [
+      "transformer models"
+    ],
+    "LLM": [
+      "large language model",
+      "large language models"
+    ],
+    "RAG": [
+      "retrieval augmented generation",
+      "retrieval-augmented generation"
+    ],
+    "Vector Database": [
+      "vector databases"
+    ],
+    "Embeddings": [
+      "embedding models"
+    ],
+    "TF-IDF": [
+      "tfidf"
+    ],
+    "Cosine Similarity": []
+  },
+  "Cloud and engineering": {
+    "AWS": [
+      "amazon web services"
+    ],
+    "Azure": [
+      "microsoft azure"
+    ],
+    "GCP": [
+      "google cloud platform",
+      "google cloud"
+    ],
+    "Docker": [],
+    "Kubernetes": [
+      "k8s"
+    ],
+    "Terraform": [],
+    "Ansible": [],
+    "Linux": [],
+    "Git": [],
+    "GitHub": [],
+    "GitLab": [],
+    "CI/CD": [
+      "continuous integration",
+      "continuous deployment"
+    ],
+    "GitHub Actions": [],
+    "Jenkins": [],
+    "Vercel": [],
+    "Render": [],
+    "Microservices": [
+      "microservice architecture"
+    ],
+    "System Design": [],
+    "Unit Testing": [],
+    "Integration Testing": [],
+    "HTTP": [],
+    "DNS": [],
+    "OAuth": [
+      "oauth2",
+      "oauth 2.0"
+    ],
+    "JWT": [
+      "json web token"
+    ],
+    "Figma": [],
+    "Agile": [],
+    "Scrum": [],
+    "Jira": []
+  }
+}
