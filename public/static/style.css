@@ -1280,17 +1280,3 @@ textarea:focus {
         justify-content: space-between;
     }
 }
-
-/* Interview-friendly demo, transparency and report actions */
-.demo-cta { display:flex; flex-direction:column; align-items:center; gap:0.75rem; margin:0.75rem 0 1.5rem; }
-.demo-btn { display:inline-block; border:1px solid rgba(140,160,255,.4); border-radius:12px; padding:.8rem 1.25rem; color:white; text-decoration:none; background:linear-gradient(130deg,#5256d5,#7e42ba); font:inherit; font-weight:600; cursor:pointer; text-align:center; }
-.demo-btn:hover, .demo-btn:focus-visible { filter:brightness(1.15); outline:2px solid #a7a9fa; outline-offset:2px; }
-.privacy-note { font-size:.78rem; color:var(--text-secondary); text-align:center; }
-.score-breakdown { margin:1rem 0; padding:1.1rem; background:rgba(255,255,255,.035); border:1px solid rgba(255,255,255,.08); border-radius:12px; }
-.score-breakdown > div { display:flex; justify-content:space-between; gap:1.2rem; margin:.4rem 0; }
-.score-breakdown strong { color:#c5c6ff; white-space:nowrap; }
-.score-disclaimer { color:var(--text-secondary); font-size:.79rem; margin-top:1rem; line-height:1.55; }
-.report-actions { display:flex; align-items:center; justify-content:flex-start; gap:1rem; flex-wrap:wrap; margin-bottom:1rem; }
-.report-demo-link { color:#b7b8fb; text-decoration:underline; }
-.candidate-card:focus-visible { outline:2px solid #b7b8fb; outline-offset:3px; }
-@media(max-width:640px){.score-breakdown > div{font-size:.86rem}.report-actions{flex-direction:column;align-items:stretch}}

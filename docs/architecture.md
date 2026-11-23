@@ -4,17 +4,17 @@
 
 Browser -> Flask Blueprint -> upload validation -> in-memory PDF/TXT extraction
 -> canonical skill detection -> TF-IDF similarity -> heuristic score
--> ranked HTML report -> browser-side CSV export.
+-> ranked HTML report shown in the original upload-first interface.
 
 ## Responsibilities
 
 - app.py: stable WSGI entry point for Vercel.
 - resumeiq/__init__.py: Flask app factory and request-size configuration.
-- resumeiq/routes.py: input checks, HTTP routes, health check, demo route.
+- resumeiq/routes.py: input checks, upload route, and health check.
 - resumeiq/parser.py: in-memory file validation and extraction.
 - resumeiq/skills.py: curated JSON taxonomy and alias matching.
 - resumeiq/scoring.py: normalized text, TF-IDF similarity, heuristic ranking.
-- resumeiq/service.py: end-to-end screening, demo fixtures, deterministic sorting.
+- resumeiq/service.py: end-to-end screening, sample fixtures for tests, deterministic sorting.
 - templates/: Jinja server-rendered HTML.
 - public/static/: Vercel CDN stylesheets and browser scripts.
 - tests/: isolated unit and Flask integration tests.
@@ -40,8 +40,7 @@ automatic rejection.
 
 Resume content is read into server memory, analyzed and used to generate a
 report. This application does not intentionally persist resumes, add a
-database, or forward documents to an external LLM. The browser can download
-a local CSV summary without an additional network request.
+database, or forward documents to an external LLM. The browser displays the ranked report without downloading or retaining uploads.
 
 ## Limitations
 

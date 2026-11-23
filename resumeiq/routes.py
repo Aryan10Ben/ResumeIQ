@@ -1,7 +1,7 @@
 """HTTP-only request handling. Parsing and matching live in services."""
 from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
 
-from resumeiq.service import DEMO_JOB_DESCRIPTION, sample_documents, screen_documents
+from resumeiq.service import screen_documents
 from resumeiq.skills import skill_catalog
 
 screening = Blueprint("screening", __name__)
@@ -21,7 +21,7 @@ def health():
     }
 
 
-def render_results(documents, jd, *, demo=False):
+def render_results(documents, jd):
     results, errors = screen_documents(
         documents, jd, max_bytes=current_app.config["MAX_FILE_BYTES"]
     )
@@ -37,13 +37,7 @@ def render_results(documents, jd, *, demo=False):
         job_description=jd,
         total_candidates=len(results),
         best_match=results[0],
-        demo=demo,
     )
-
-
-@screening.get("/demo")
-def demo():
-    return render_results(sample_documents(), DEMO_JOB_DESCRIPTION, demo=True)
 
 
 @screening.post("/match")

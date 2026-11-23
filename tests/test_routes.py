@@ -5,7 +5,10 @@ def test_homepage_renders(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"Screen & Rank Resumes" in response.data
-    assert b"Try an instant demo" in response.data
+    assert b"Upload Resumes" in response.data
+    assert b"Job Description" in response.data
+    assert b"Try an instant demo" not in response.data
+    assert b"btnExportCsv" not in response.data
 
 
 def test_health_is_lightweight(client):
@@ -15,13 +18,25 @@ def test_health_is_lightweight(client):
     assert response.json["skills_loaded"] >= 90
 
 
-def test_demo_renders_rankings(client):
+def test_demo_feature_is_removed(client):
     response = client.get("/demo")
+    assert response.status_code == 404
+
+
+def test_classic_results_view(client):
+    response = client.post(
+        "/match",
+        data={
+            "job_description": "Python Flask React",
+            "resumes": (BytesIO(b"Python Flask React"), "candidate.txt"),
+        },
+        content_type="multipart/form-data",
+    )
     assert response.status_code == 200
-    assert b"alice_dev.txt" in response.data
-    assert b"bob_ds.txt" in response.data
-    assert b"Recognized-skill coverage" in response.data
-    assert b"Download comparison CSV" in response.data
+    assert b"Ranking Leaderboard" in response.data
+    assert b"Recruiter Action Review" in response.data
+    assert b"Download comparison CSV" not in response.data
+    assert b"Recognized-skill coverage" not in response.data
 
 
 def test_post_txt_upload_matches(client):
