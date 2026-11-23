@@ -1,6 +1,5 @@
 import re
 import os
-import pdfplumber
 
 # Set of standard English stopwords to keep the installation lean and reliable
 STOPWORDS = {
@@ -26,6 +25,7 @@ def extract_text_from_pdf(pdf_path):
     """
     text = ""
     try:
+        import pdfplumber
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages:
                 extracted = page.extract_text()

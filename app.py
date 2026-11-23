@@ -6,10 +6,9 @@ from werkzeug.utils import secure_filename
 # Import our custom utilities
 from utils.text_processing import extract_text, clean_text
 from utils.skill_extraction import load_skills, compile_skill_patterns, extract_skills_from_text, compare_skills
-from utils.matching import calculate_match_percentage, generate_recommendation
 
 app = Flask(__name__)
-app.secret_key = 'resume_screening_secret_key_for_session_flashing'
+app.secret_key = os.environ.get('FLASK_SECRET_KEY') or os.urandom(32)
 
 # Load and compile skill lexicon on startup
 print("Loading skill database...")
@@ -31,6 +30,11 @@ def index():
     Renders the homepage containing upload form and job description text area.
     """
     return render_template('index.html')
+
+@app.get('/health')
+def health():
+    """Basic readiness check for deployment monitoring."""
+    return {'status': 'ok', 'service': 'ResumeIQ', 'skills_loaded': len(SKILLS_LIST)}
 
 @app.route('/match', methods=['POST'])
 def match():
@@ -56,6 +60,9 @@ def match():
     if not valid_files:
         flash("Please upload at least one valid resume file (.pdf or .txt).", "error")
         return redirect(url_for('index'))
+
+    # Import larger machine-learning libraries only for resume analysis, not initial page load.
+    from utils.matching import calculate_match_percentage, generate_recommendation
 
     # Clean job description text
     cleaned_jd = clean_text(job_description)
@@ -132,4 +139,4 @@ def match():
 if __name__ == '__main__':
     # Run development server, loading port from environment (e.g., for cloud deployment compatibility)
     port = int(os.environ.get("PORT", 5001))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=os.environ.get('FLASK_DEBUG', '').lower() == 'true', host='0.0.0.0', port=port)
