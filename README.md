@@ -4,7 +4,7 @@
 
 ResumeIQ helps recruiters and hiring teams quickly identify the best candidates by automatically analyzing resumes against a job description.
 
-🌐 **Live Demo:** https://resumeiq-tfwo.onrender.com
+🌐 **Live Demo:** https://resumeiq-ten-blue.vercel.app
 
 ---
 
@@ -64,7 +64,11 @@ ResumeIQ helps recruiters and hiring teams quickly identify the best candidates 
 
 ## 🔗 Live Application
 
-👉 https://resumeiq-tfwo.onrender.com
+👉 https://resumeiq-ten-blue.vercel.app
+
+**Deployment:** Vercel (Flask / Python 3.12). Health check: https://resumeiq-ten-blue.vercel.app/health
+
+**Upload limit:** Vercel Functions have a 4.5 MB request-body limit. Keep combined resume files and form data below this threshold; larger multi-resume batches require a different upload architecture.
 
 ---
 
