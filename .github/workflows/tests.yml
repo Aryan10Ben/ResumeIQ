@@ -18,5 +18,9 @@ jobs:
         run: python -m pip install -r requirements.txt -r requirements-dev.txt
       - name: Syntax check
         run: python -m compileall -q app.py resumeiq tests
+      - name: Validate browser JavaScript syntax
+        run: |
+          node --check public/static/app.js
+          node --check public/static/results.js
       - name: Run unit and integration tests
         run: python -m pytest -q
