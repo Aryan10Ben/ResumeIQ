@@ -1,75 +1,105 @@
-# 🚀 ResumeIQ
+# ResumeIQ — Explainable Resume Matching
 
-### AI-Powered Resume Screening & Candidate Ranking System
+**Live demo:** https://resumeiq-ten-blue.vercel.app
 
-ResumeIQ helps recruiters and hiring teams quickly identify the best candidates by automatically analyzing resumes against a job description.
+**One-click sample report:** https://resumeiq-ten-blue.vercel.app/demo
 
-🌐 **Live Demo:** https://resumeiq-ten-blue.vercel.app
+ResumeIQ is a Flask + Python NLP application that compares up to five PDF or
+TXT resumes with a job description. It detects relevant technologies, computes
+an explainable heuristic, and ranks candidate documents in an interactive
+report. It is an educational decision-support prototype, **not a certified
+ATS or automated hiring system**.
 
----
+## Features
 
-## ✨ What It Does
+- In-memory PDF/TXT parsing with type, size and page limits
+- Curated technical-skills taxonomy and aliases (Python, C++, C#, Node.js, etc.)
+- Transparent 65% skill coverage / 35% TF-IDF cosine similarity heuristic
+- Ranked candidate reports and missing-skill explanations
+- Instant demo using three fictional resume samples
+- Spreadsheet-safe comparison CSV export in the browser
+- Responsive UI and keyboard-accessible candidate selection
+- Flask health endpoint, automated integration tests, GitHub Actions CI
 
-- 📄 Extracts skills from PDF and TXT resumes
-- 🎯 Matches resumes against a job description
-- 📊 Calculates a compatibility score
-- 🔍 Identifies matched and missing skills
-- 🏆 Ranks candidates from best to worst fit
-- ⚡ Processes multiple resumes in seconds
+## Tech stack
 
----
+Python 3.12, Flask, scikit-learn, pdfplumber, Jinja templates, vanilla
+JavaScript, CSS, pytest, GitHub Actions, and Vercel.
 
-## 🛠️ How It Works
+## Run locally
 
-1. Upload one or more resumes
-2. Paste the job description
-3. ResumeIQ analyzes candidate skills
-4. Computes similarity scores using NLP techniques
-5. Displays rankings, matched skills, and skill gaps
+~~~bash
+python -m venv .venv
+source .venv/bin/activate
+# Windows PowerShell: .venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt -r requirements-dev.txt
+python app.py
+~~~
 
----
+Open http://127.0.0.1:5001 and choose "Try an instant demo".
 
-## 🌟 Key Features
+For production, configure a strong, stable FLASK_SECRET_KEY environment
+variable in Vercel; do not commit it to the repository.
 
-- Multi-resume comparison
-- Automated skill extraction
-- Candidate ranking dashboard
-- Missing skill analysis
-- PDF & TXT support
-- Modern responsive UI
+## Run the tests
 
----
+~~~bash
+python -m pytest -q
+~~~
 
-## 💻 Tech Stack
+The suite checks candidate rankings, skill aliases, invalid uploads,
+safe rendering, actual PDF extraction, and Flask endpoint behavior.
+GitHub Actions runs tests on every feature-branch and main push.
 
-- Python
-- Flask
-- Scikit-learn
-- HTML5
-- CSS3
-- JavaScript
-- NLP & Cosine Similarity
+## Matching algorithm
 
----
+1. Validate PDF/TXT uploads and extract selectable text in memory.
+2. Detect canonical skills in the original text, including aliases.
+3. Calculate TF-IDF bigram cosine text similarity.
+4. Calculate coverage of recognized job-description skills.
+5. Combine 65% skill coverage + 35% cosine similarity, or use cosine
+   similarity alone if no recognized job skills are present.
+6. Rank by heuristic score and explain the components in the report.
 
-## 🎯 Use Cases
+The result is **not a measured ATS score**, employer decision, hiring
+probability or validated capability assessment. Human review is essential.
 
-- Recruiters
-- HR Teams
-- Hiring Managers
-- Campus Recruitment
-- Resume Shortlisting
+## Project layout
 
----
+~~~text
+app.py                   Flask WSGI entry point
+resumeiq/
+  __init__.py            App factory / configuration
+  routes.py              HTTP request handling
+  parser.py              PDF/TXT validation and extraction
+  skills.py              Canonical skill mapping and aliases
+  scoring.py             TF-IDF and transparent heuristic
+  service.py             Candidate screening workflow
+data/skills.json         Curated vocabulary
+public/static/           Browser JS and CSS
+templates/               HTML/Jinja views
+samples/                 Fictional resumes
+tests/                   Unit and integration tests
+docs/                    Architecture, evaluation, security
+.github/workflows/       Automated CI
+~~~
 
-## 🔗 Live Application
+Read [architecture](docs/architecture.md), [evaluation](docs/evaluation.md)
+and [security](docs/security.md) for details.
 
-👉 https://resumeiq-ten-blue.vercel.app
+## Deployment and constraints
 
-**Deployment:** Vercel (Flask / Python 3.12). Health check: https://resumeiq-ten-blue.vercel.app/health
+Hosted as a Flask Python function on Vercel. The standard function
+request-body cap is 4.5 MB, and the app enforces 4 MiB. Individual resumes
+are capped at 3 MiB, batches at 5 files, and PDFs at 15 pages. Scanned PDFs
+without selectable text are not yet supported. No resume database is used.
 
-**Upload limit:** Vercel Functions have a 4.5 MB request-body limit. Keep combined resume files and form data below this threshold; larger multi-resume batches require a different upload architecture.
+## Interview discussion topics
 
----
-
-### Built with ❤️ to simplify resume screening and candidate evaluation.
+- How do TF-IDF vectors and cosine similarity compare documents?
+- How do you prevent false matches for special terms like C++ and Node.js?
+- Why combine coverage and similarity? What happens without ground truth?
+- How do you secure file uploads and prevent browser-side XSS?
+- Why separate routes, parsing, extraction, and scoring modules?
+- How do unit, integration, security and deployment checks differ?
+- Why is human review necessary in automated candidate ranking?
