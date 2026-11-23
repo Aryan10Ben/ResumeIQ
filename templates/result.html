@@ -52,7 +52,7 @@
                 <section class="candidate-sidebar">
                     <div class="sidebar-header">
                         <h2><i class="fa-solid fa-ranking-star"></i> Ranking Leaderboard</h2>
-                        <p>Ranked by skill coverage + TF-IDF similarity</p>
+                        <p>Sorted by TF-IDF & Cosine Similarity</p>
                     </div>
                     
                     <div class="candidate-cards-list">
@@ -111,15 +111,6 @@
                         </div>
 
                         <!-- Divider -->
-                        <div class="score-breakdown" aria-label="Transparent relevance score breakdown">
-                            <div><span>Recognized-skill coverage</span><strong id="detailSkillCoverage">{{ best_match.skill_coverage if best_match.skill_coverage is not none else 'N/A' }}{% if best_match.skill_coverage is not none %}%{% endif %}</strong></div>
-                            <div><span>TF-IDF cosine similarity</span><strong id="detailTextSimilarity">{{ best_match.text_similarity }}%</strong></div>
-                            <p class="score-disclaimer">A heuristic relevance score, not an official ATS score, hiring probability, or an automatic rejection decision. Human review remains essential.</p>
-                        </div>
-                        <div class="report-actions">
-                            <button class="demo-btn" id="btnExportCsv" type="button">Download comparison CSV</button>
-                            <a href="{{ url_for('screening.demo') }}" class="report-demo-link">Run sample demo</a>
-                        </div>
                         <hr class="report-divider">
 
                         <!-- Recruiter Action Card -->

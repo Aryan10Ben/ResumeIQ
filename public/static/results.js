@@ -30,8 +30,6 @@
             const feedbackBox = document.getElementById('detailFeedbackBox');
             feedbackBox.className = `recruiter-feedback-box bg-${data.rec_status_class}`;
             document.getElementById('detailExplanation').textContent = data.rec_explanation;
-            document.getElementById('detailTextSimilarity').textContent = data.text_similarity + '%';
-            document.getElementById('detailSkillCoverage').textContent = data.skill_coverage == null ? 'N/A' : data.skill_coverage + '%';
             document.getElementById('detailRecommendation').textContent = data.rec_recommendation;
             
             // 5. Update skills counts
@@ -71,29 +69,3 @@
                 document.querySelector('.report-panel').scrollIntoView({ behavior: 'smooth' });
             }
         }
-    
-        // CSV export is generated client-side: uploaded resume text is never persisted.
-        const csvButton = document.getElementById('btnExportCsv');
-        if (csvButton) csvButton.addEventListener('click', () => {
-            const rows = [
-                ['Candidate', 'Relevance score', 'Skill coverage', 'TF-IDF similarity', 'Matched skills', 'Missing skills'],
-                ...candidates.map(item => [
-                    item.filename, item.score, item.skill_coverage == null ? '' : item.skill_coverage,
-                    item.text_similarity, item.matched_skills.join('; '), item.missing_skills.join('; ')
-                ])
-            ];
-            const escapeCsv = (value) => {
-                let str = String(value == null ? '' : value);
-                if (/^[=+\-@]/.test(str)) str = "'" + str; // Protect spreadsheet readers.
-                return '"' + str.replace(/"/g, '""') + '"';
-            };
-            const content = rows.map(row => row.map(escapeCsv).join(',')).join('\r\n');
-            const url = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' }));
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'resumeiq-results.csv';
-            document.body.appendChild(link);
-            link.click();
-            link.remove();
-            URL.revokeObjectURL(url);
-        });

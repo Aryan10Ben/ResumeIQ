@@ -2,8 +2,6 @@
 
 **Live demo:** https://resumeiq-ten-blue.vercel.app
 
-**One-click sample report:** https://resumeiq-ten-blue.vercel.app/demo
-
 ResumeIQ is a Flask + Python NLP application that compares up to five PDF or
 TXT resumes with a job description. It detects relevant technologies, computes
 an explainable heuristic, and ranks candidate documents in an interactive
@@ -16,8 +14,7 @@ ATS or automated hiring system**.
 - Curated technical-skills taxonomy and aliases (Python, C++, C#, Node.js, etc.)
 - Transparent 65% skill coverage / 35% TF-IDF cosine similarity heuristic
 - Ranked candidate reports and missing-skill explanations
-- Instant demo using three fictional resume samples
-- Spreadsheet-safe comparison CSV export in the browser
+- Original upload-first interface, with a multi-resume ranking report
 - Responsive UI and keyboard-accessible candidate selection
 - Flask health endpoint, automated integration tests, GitHub Actions CI
 
@@ -36,7 +33,7 @@ python -m pip install -r requirements.txt -r requirements-dev.txt
 python app.py
 ~~~
 
-Open http://127.0.0.1:5001 and choose "Try an instant demo".
+Open http://127.0.0.1:5001, upload a PDF/TXT resume, paste a job description and select **Screen & Rank Resumes**.
 
 For production, configure a strong, stable FLASK_SECRET_KEY environment
 variable in Vercel; do not commit it to the repository.
@@ -48,7 +45,7 @@ python -m pytest -q
 ~~~
 
 The suite checks candidate rankings, skill aliases, invalid uploads,
-safe rendering, actual PDF extraction, and Flask endpoint behavior.
+safe rendering, actual PDF extraction, the restored interface, and Flask endpoint behavior.
 GitHub Actions runs tests on every feature-branch and main push.
 
 ## Matching algorithm
@@ -59,7 +56,7 @@ GitHub Actions runs tests on every feature-branch and main push.
 4. Calculate coverage of recognized job-description skills.
 5. Combine 65% skill coverage + 35% cosine similarity, or use cosine
    similarity alone if no recognized job skills are present.
-6. Rank by heuristic score and explain the components in the report.
+6. Rank by relevance score and show matching and missing skills in the original report layout.
 
 The result is **not a measured ATS score**, employer decision, hiring
 probability or validated capability assessment. Human review is essential.
@@ -76,7 +73,7 @@ resumeiq/
   scoring.py             TF-IDF and transparent heuristic
   service.py             Candidate screening workflow
 data/skills.json         Curated vocabulary
-public/static/           Browser JS and CSS
+public/static/           Browser JS and original CSS theme
 templates/               HTML/Jinja views
 samples/                 Fictional resumes
 tests/                   Unit and integration tests
