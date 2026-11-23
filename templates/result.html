@@ -52,13 +52,13 @@
                 <section class="candidate-sidebar">
                     <div class="sidebar-header">
                         <h2><i class="fa-solid fa-ranking-star"></i> Ranking Leaderboard</h2>
-                        <p>Sorted by TF-IDF & Cosine Similarity</p>
+                        <p>Ranked by skill coverage + TF-IDF similarity</p>
                     </div>
                     
                     <div class="candidate-cards-list">
                         {% for res in results %}
                             <div class="candidate-card {% if loop.first %}active{% endif %}" 
-                                 onclick="selectCandidate({{ loop.index0 }})"
+                                 onclick="selectCandidate({{ loop.index0 }})" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();selectCandidate({{ loop.index0 }});}"
                                  data-index="{{ loop.index0 }}"
                                  id="candidate-card-{{ loop.index0 }}">
                                 <div class="rank-badge">#{{ loop.index }}</div>
@@ -111,12 +111,21 @@
                         </div>
 
                         <!-- Divider -->
+                        <div class="score-breakdown" aria-label="Transparent relevance score breakdown">
+                            <div><span>Recognized-skill coverage</span><strong id="detailSkillCoverage">{{ best_match.skill_coverage if best_match.skill_coverage is not none else 'N/A' }}{% if best_match.skill_coverage is not none %}%{% endif %}</strong></div>
+                            <div><span>TF-IDF cosine similarity</span><strong id="detailTextSimilarity">{{ best_match.text_similarity }}%</strong></div>
+                            <p class="score-disclaimer">A heuristic relevance score, not an official ATS score, hiring probability, or an automatic rejection decision. Human review remains essential.</p>
+                        </div>
+                        <div class="report-actions">
+                            <button class="demo-btn" id="btnExportCsv" type="button">Download comparison CSV</button>
+                            <a href="{{ url_for('screening.demo') }}" class="report-demo-link">Run sample demo</a>
+                        </div>
                         <hr class="report-divider">
 
                         <!-- Recruiter Action Card -->
                         <div class="recruiter-feedback-box bg-{{ best_match.rec_status_class }}" id="detailFeedbackBox">
                             <h3><i class="fa-solid fa-clipboard-question"></i> Recruiter Action Review</h3>
-                            <p class="rec-explanation" id="detailExplanation">{{ best_match.rec_explanation | safe }}</p>
+                            <p class="rec-explanation" id="detailExplanation">{{ best_match.rec_explanation }}</p>
                             <div class="rec-action-banner">
                                 <span class="action-label">Recommendation:</span>
                                 <span class="action-val" id="detailRecommendation">{{ best_match.rec_recommendation }}</span>
@@ -168,77 +177,7 @@
     </div>
 
     <!-- Inject data into client-side JS for snappy UI switching -->
-    <script>
-        const candidates = {{ results | tojson }};
-        
-        function selectCandidate(index) {
-            const data = candidates[index];
-            if (!data) return;
-            
-            // 1. Update active card in sidebar
-            document.querySelectorAll('.candidate-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            document.getElementById(`candidate-card-${index}`).classList.add('active');
-            
-            // 2. Update filename and status badge
-            document.getElementById('detailFilename').textContent = data.filename;
-            
-            const statusBadge = document.getElementById('detailStatusBadge');
-            statusBadge.className = `badge-status badge-${data.rec_status_class}`;
-            statusBadge.textContent = data.rec_headline;
-            
-            // 3. Update score ring and percentage text
-            document.getElementById('detailScoreText').textContent = data.score;
-            
-            const ringFg = document.getElementById('detailRingFg');
-            const circumference = 2 * Math.PI * 50; // 314.16
-            const offset = circumference - (circumference * data.score / 100);
-            ringFg.style.strokeDashoffset = offset;
-            
-            // 4. Update recruiter feedback box styling and texts
-            const feedbackBox = document.getElementById('detailFeedbackBox');
-            feedbackBox.className = `recruiter-feedback-box bg-${data.rec_status_class}`;
-            document.getElementById('detailExplanation').innerHTML = data.rec_explanation;
-            document.getElementById('detailRecommendation').textContent = data.rec_recommendation;
-            
-            // 5. Update skills counts
-            document.getElementById('detailMatchedCount').textContent = data.skills_count.matched;
-            document.getElementById('detailMissingCount').textContent = data.skills_count.missing;
-            
-            // 6. Repopulate matched skills pills
-            const matchedContainer = document.getElementById('detailMatchedPills');
-            matchedContainer.innerHTML = '';
-            if (data.matched_skills && data.matched_skills.length > 0) {
-                data.matched_skills.forEach(skill => {
-                    const pill = document.createElement('span');
-                    pill.className = 'skill-pill matched-pill';
-                    pill.textContent = skill;
-                    matchedContainer.appendChild(pill);
-                });
-            } else {
-                matchedContainer.innerHTML = '<span class="no-skills-msg">No matched skills detected.</span>';
-            }
-            
-            // 7. Repopulate missing skills pills
-            const missingContainer = document.getElementById('detailMissingPills');
-            missingContainer.innerHTML = '';
-            if (data.missing_skills && data.missing_skills.length > 0) {
-                data.missing_skills.forEach(skill => {
-                    const pill = document.createElement('span');
-                    pill.className = 'skill-pill missing-pill';
-                    pill.textContent = skill;
-                    missingContainer.appendChild(pill);
-                });
-            } else {
-                missingContainer.innerHTML = '<span class="no-skills-msg text-muted">All requirements satisfied!</span>';
-            }
-            
-            // Auto scroll details panel to top on mobile
-            if (window.innerWidth <= 900) {
-                document.querySelector('.report-panel').scrollIntoView({ behavior: 'smooth' });
-            }
-        }
-    </script>
+    <script id="candidate-data" type="application/json">{{ results | tojson }}</script>
+    <script defer src="{{ url_for('static', filename='results.js') }}"></script>
 </body>
 </html>
